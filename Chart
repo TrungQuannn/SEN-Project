@@ -1,0 +1,48 @@
+Flow:
+User input
+   │
+   ▼
+ Query (searchPhrase)
+   │
+   ├─> getKeywords() → [Word, Word, ...]
+   │
+   └─> matchAgainst(Doc)
+            │
+            ▼
+        Match list (per Doc)
+            │
+            ▼
+        Result (per Doc)
+            │
+            ▼
+        Engine (search over all Docs)
+            │
+            ▼
+        Ranked Results (HTML)
+
+Class:
+                ┌─────────────┐
+                │   Engine    │
+                └─────┬───────┘
+                      │
+      ┌───────────────┴────────────────┐
+      ▼                                ▼
+ ┌───────────┐                  ┌───────────┐
+ │   Query   │                  │   Doc     │
+ └─────┬─────┘                  └─────┬─────┘
+       │                            Title + Body
+       │ getKeywords()                   │
+       ▼                                ▼
+  ┌───────────┐                   ┌───────────┐
+  │   Word    │◄──────────────────│   Word    │
+  └───────────┘                   └───────────┘
+       │
+       ▼
+  ┌───────────┐
+  │   Match   │  (Doc + Word + frequency + firstIndex)
+  └─────┬─────┘
+        │
+        ▼
+  ┌───────────┐
+  │  Result   │  (Doc + Matches, totalFrequency, avgFirstIndex)
+  └───────────┘
