@@ -1,0 +1,43 @@
+package engine;
+//tam on
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
+public class Doc {
+    private List<Word> title;
+    private List<Word> body;
+    public Doc(String content){
+        String[] line = content.split("\n",2);
+        String rawTitle = line[0]   ;
+        String rawBody = line.length > 1?line[1] : "";
+        this.title = parseWords(rawTitle);
+        this.body = parseWords(rawBody);
+    }
+    //can them 1 doan sua text
+    private List<Word> parseWords(String text){
+        List<Word> words = new ArrayList<>();
+        for(String raw: text.split("\\s+")) {
+            if(!raw.isEmpty()){
+                words.add(Word.createWord(raw));
+            }
+        }
+        return words;
+    }
+
+    public List<Word> getTitle(){
+        return title;
+    }
+    public List<Word> getBody(){
+        return body;
+    }
+    public boolean equals(Object o){
+        if(this == o) return true;
+        if(!(o instanceof Doc)) return false;
+        Doc otherO = (Doc) o;
+        return Objects.equals(this.title, otherO.title)
+                && Objects.equals(this.body, otherO.body);
+
+    }
+
+}
