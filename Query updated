@@ -1,0 +1,53 @@
+package engine;
+//tam on
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+public class Query {
+    private List<Word> theKeywords;
+    //xu li doan input thong qua searchPhrase
+    public Query  (String searchPhrase){
+        theKeywords = new ArrayList<>();
+        for(String sp :searchPhrase.split("\\s+")){
+            Word ws = Word.createWord(sp);
+            //neu la keyword => them vao arrayList de xu li
+            if(ws.isKeyword()){
+                theKeywords.add(ws);
+            }
+        }
+    }
+    //nhan keyword tu array
+    public List<Word> getKeywords(){
+        return theKeywords;
+    }
+    //doi chieu
+    public List<Match> matchAgainst(Doc d){
+        List<Match> match  = new ArrayList<>();
+
+        List<Word> result = new ArrayList<>();
+        result.addAll(d.getTitle());
+        result.addAll(d.getBody());
+
+        for(Word w : theKeywords) {
+            int freq = 0;
+            int firstIndex = -1;
+
+            for(int i = 0;i<result.size();i++) {
+                if (w.equals(result.get(i)))  {
+                    freq++;
+
+                    if (firstIndex == -1) {
+                        firstIndex = i;
+                    }
+                }
+            }
+            if(freq >0){
+                match.add(new Match( d,  w,  freq, firstIndex));
+            }
+        }
+        Collections.sort(match);
+        return match;
+    }
+
+}
