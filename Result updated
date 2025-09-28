@@ -1,0 +1,52 @@
+package engine;
+
+import java.util.List;
+
+public class Result implements Comparable<Result> {
+    private Doc dcmt;
+    private List<Match> matches;
+    public Result (Doc d, List<Match> matches){
+  this.dcmt = d;
+  this.matches= matches;
+    }
+
+    public List<Match> getMatches(){
+        return matches;
+    }
+    public int getTotalFrequency(){
+        int totalFreq = 0;
+        for(Match m : matches){
+            totalFreq = totalFreq + m.getFreq();
+        }
+        return totalFreq;
+    }
+    public double getAverageFirstIndex(){
+        if (matches.isEmpty()){
+            return 0;
+        }
+        //neu khong empty
+        int ave= 0;
+        for(Match ma: matches){
+            ave = ave + ma.getFirstIndex();
+        }
+        return (double) ave / matches.size();
+    }
+    public String htmlHighlight(){
+        return "";
+    }
+    public int compareTo(Result o){
+//        A has greater match count than B = so sanh matches.size()
+        if(this.matches.size() != o.matches.size()){
+            return Integer.compare(o.matches.size(), this.matches.size());
+        }
+//        A has greater total frequency than B = so sanh getTotalFrequency()
+        if(this.getTotalFrequency() != o.getTotalFrequency()){
+            return Integer.compare(o.getTotalFrequency(), this.getTotalFrequency());
+        }
+//        A has lower average first index than B
+        if(this.getAverageFirstIndex() != o.getAverageFirstIndex()){
+            return Double.compare(this.getAverageFirstIndex(), o.getAverageFirstIndex());
+        }
+        return 0;
+    }
+}
