@@ -1,9 +1,0 @@
-package engine;
-
-public class Match implements Comparable<Match> {
-    public Match(Doc d, Word w, int freq,int firstIndex){}
-    public int getFreq(){}
-    public int getFirstIndex(){}
-    public Word getWord(){}
-    public int compareTo(Match o){}
-}
