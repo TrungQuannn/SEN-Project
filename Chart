@@ -46,3 +46,6 @@ Class:
   ┌───────────┐
   │  Result   │  (Doc + Matches, totalFrequency, avgFirstIndex)
   └───────────┘
+
+
+this is the demo class. For clearer demonstration, more detailed intel will be provided in the imcoming updates.
