@@ -1,4 +1,4 @@
-package engine;
+package a1_2201140072;
 //tam on
 import java.util.ArrayList;
 import java.util.List;
@@ -14,21 +14,22 @@ public class Doc {
         this.title = parseWords(rawTitle);
         this.body = parseWords(rawBody);
     }
-    //can them 1 doan sua text
+
     private List<Word> parseWords(String text){
         List<Word> words = new ArrayList<>();
-        for(String raw: text.split("\\s+")) {
+        for(String raw: text.split(" ")) {
             if(!raw.isEmpty()){
                 words.add(Word.createWord(raw));
             }
         }
         return words;
     }
-
     public List<Word> getTitle(){
+
         return title;
     }
     public List<Word> getBody(){
+
         return body;
     }
     public boolean equals(Object o){
