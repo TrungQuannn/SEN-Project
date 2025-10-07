@@ -1,0 +1,80 @@
+package a1_2201140072;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+public class Engine {
+    private List<Doc> docs = new ArrayList<>();
+
+    // xu li docs
+    public int loadDocs(String dirname) {
+        docs.clear();
+        File fol = new File(dirname);
+
+        if (!fol.exists() || !fol.isDirectory()) return 0;
+
+        File[] files = fol.listFiles();
+        if (files == null) return 0;
+
+        // sort file theo thu tu 01.txt, 02.txt ... 10.txt
+        java.util.Arrays.sort(files, (a, b) -> {
+            try {
+                int numA = Integer.parseInt(a.getName().replaceAll("\\D", ""));
+                int numB = Integer.parseInt(b.getName().replaceAll("\\D", ""));
+                return Integer.compare(numA, numB);
+            } catch (NumberFormatException e) {
+                return a.getName().compareTo(b.getName());
+            }
+        });
+
+        for (File f : files) {
+            if (f.isFile() && f.getName().endsWith(".txt")) {
+                try {
+                    String fileContent = new String(Files.readAllBytes(f.toPath()));
+                    docs.add(new Doc(fileContent));
+                } catch (IOException e) {
+                    // file loi = ignore
+                }
+            }
+        }
+        return docs.size();
+    }
+
+
+    public Doc[] getDocs() {
+        return docs.toArray(new Doc[0]);
+    }
+
+    public List<Result> search(Query q) {
+        List<Result> results = new ArrayList<>();
+        for (Doc d : docs) {
+            List<Match> matches = q.matchAgainst(d);
+            if (!matches.isEmpty()) {
+                results.add(new Result(d, matches));
+            }
+        }
+        Collections.sort(results);
+        return results;
+    }
+
+    public String htmlResult(List<Result> results) {
+        StringBuilder sb = new StringBuilder();
+        for (Result r : results) {
+            // Mỗi Result đã trả về HTML đầy đủ qua htmlHighlight()
+            sb.append(r.htmlHighlight());
+            // Không thêm dấu cách, xuống dòng hay delimiter nào khác
+        }
+
+        return sb.toString();
+    }
+
+
+
+
+
+
+}
