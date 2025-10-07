@@ -1,0 +1,132 @@
+package a1_2201140072;
+
+//tam on
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.Set;
+import java.util.HashSet;
+
+public class Word {
+    private String prefix;
+    private String suffix;
+    private String text;
+
+    public Word(String prefix, String text, String suffix){
+        this.prefix = prefix;
+        this.text= text;
+        this.suffix = suffix;
+    }
+
+    public static Set<String> stopWords;
+
+    // rawText ( prefix, suffix, validation)
+    public static Word createWord(String rawText){
+        if (rawText == null || rawText.isEmpty()) {
+            return new Word("", rawText, "");
+        }
+        // blank -> invalid
+        if (rawText.contains(" ")) {
+            return new Word("", rawText, "");
+        }
+
+        //prefix
+        int prefixCount = 0;
+        while (prefixCount < rawText.length() && !Character.isLetterOrDigit(rawText.charAt(prefixCount))) {
+            prefixCount++;
+        }
+        String prefix = rawText.substring(0, prefixCount);
+
+        //suffix
+        int suffixCount = rawText.length();
+        while (suffixCount > prefixCount && !Character.isLetterOrDigit(rawText.charAt(suffixCount - 1))) {
+            suffixCount--;
+        }
+        String suffix = rawText.substring(suffixCount);
+
+        // text
+        String text = rawText.substring(prefixCount, suffixCount);
+
+        // 's in text=> suffix
+        if (text.endsWith("'s") || text.endsWith("'S")) {
+            text = text.substring(0, text.length() - 2);
+            suffix = "'s" + suffix;
+        }
+
+
+        boolean hasLetter = false;
+        boolean validPunctuation = true;
+        for (int i = 0; i < text.length(); i++) {
+            char c = text.charAt(i);
+            if (Character.isLetter(c)) {
+                hasLetter = true;
+            } else if (!(c == '-' || c == '\'')) {
+               //xoa dau khong phu hop
+                validPunctuation = false;
+            }
+        }
+        if (!validPunctuation || !hasLetter) {
+            // invalid => text = rawText, suf - pre trong
+            return new Word("", rawText, "");
+        }
+
+        return new Word(prefix, text, suffix);
+    }
+
+    // word = keyword?
+    public boolean isKeyword(){
+        // text 0 null, trong, 0 ki tu
+        // 0 thuoc stopword
+        if(text!=null && !text.isEmpty()&&text.matches(".*[a-zA-Z].*")&&!text.matches(".*[0-9].*")&&!text.matches(".*[!@#$%^&*].*")
+               &&!text.startsWith(" ")&&(stopWords==null||!stopWords.contains(text.toLowerCase()))){
+            return true;
+        }
+        return false;
+    }
+
+    public String getPrefix(){
+        return prefix;
+    }
+    public String getSuffix(){
+        return suffix;
+    }
+    public String getText(){
+        return text;
+    }
+
+    //buffered de doc file (stopwords.txt)
+    public static boolean loadStopWords(String fileName){
+        try(BufferedReader br = new BufferedReader(new FileReader(fileName))) {
+            stopWords = new HashSet<>();
+
+            String line;
+            while((line = br.readLine()) != null){
+                line = line.trim();
+                if (!line.isEmpty()){
+                    stopWords.add(line.toLowerCase());
+                }
+            }
+            return true;
+        } catch(IOException e){
+            return false;
+        }
+    }
+    public boolean equals (Object o){
+        if(this ==o) {
+            return true;
+        }
+        if(!(o instanceof Word)) {
+            return false;
+        }
+        Word secondO = (Word) o;
+        //check 2 Words (so sanh text, khong qtrong hoa / thuong)
+        if (this.text == null && secondO.text == null) return true;
+        if (this.text == null || secondO.text == null) return false;
+        return this.text.equalsIgnoreCase(secondO.text);
+    }
+
+    @Override
+    public String toString() {
+        return text == null ? "" : text;
+    }
+}
